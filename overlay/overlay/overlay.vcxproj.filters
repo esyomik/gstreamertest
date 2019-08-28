@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="app">
+      <UniqueIdentifier>{6aada495-9ce6-46a0-8848-6dd9dbdd2738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="overlay">
+      <UniqueIdentifier>{3def1700-037f-4a4a-8db4-f432b3bf75da}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="app\app.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h" />
+    <ClInclude Include="overlay\interface.h">
+      <Filter>overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\overlay-factory.h">
+      <Filter>overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\test-overlay.h">
+      <Filter>overlay</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="app\app.c">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app\main.c">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\overlay-factory.c">
+      <Filter>overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\test-overlay.c">
+      <Filter>overlay</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
