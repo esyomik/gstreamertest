@@ -1,0 +1,15 @@
+*.pdb
+*.ipdb
+*.idb
+*.obj
+*.iobj
+*.lib
+*.ilk
+*.tlog
+*.log
+*.exe
+*.png
+*.jpg
+**/out/**/
+**/.vs/
+**/.vscode/
