@@ -1,9 +1,10 @@
 #ifndef APP_16_04_44_25_8_19_h
 #define APP_16_04_44_25_8_19_h
 
+#include <memory>
 #include <gst/gst.h>
 
-#include "../overlay/interface.h"
+#include "../overlay/interface.hpp"
 
 
 G_BEGIN_DECLS
@@ -18,21 +19,17 @@ G_BEGIN_DECLS
 #define GST_IS_MY_FILTER_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_OVERLAY_FILTER))
 
+
 typedef struct _OverlayFilter
 {
     GstElement element;
     GstPad* sinkpad;
     GstPad* srcpad;
-    int width;
-    int height;
-    const char* format;
 
-    const gchar* overlayType;
-    const gchar* fileName;
+    std::string fileName;
     int align;
 
-    FnOverlayInit fnInit;
-    FnOverlayDoProcess fnDoProcess;
+    std::unique_ptr<OverlayInterface> overlay;
 } OverlayFilter;
 
 typedef struct _OverlayFilterClass

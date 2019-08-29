@@ -21,15 +21,42 @@
   <ItemGroup>
     <ClInclude Include="app\app.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="overlay\interface.h" />
-    <ClInclude Include="overlay\overlay-factory.h" />
-    <ClInclude Include="overlay\test-overlay.h" />
+    <ClInclude Include="overlay\interface.hpp" />
+    <ClInclude Include="overlay\overlay-factory.hpp" />
+    <ClInclude Include="overlay\software-overlay.hpp" />
+    <ClInclude Include="overlay\test-overlay.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="app\app.c" />
-    <ClCompile Include="app\main.c" />
-    <ClCompile Include="overlay\overlay-factory.c" />
-    <ClCompile Include="overlay\test-overlay.c" />
+    <ClCompile Include="app\app.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="app\main.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="overlay\overlay-factory.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="overlay\software-overlay.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="overlay\test-overlay.cpp">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
+    </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -92,24 +119,28 @@
     <TargetName>libgstoverlay</TargetName>
     <OutDir>$(SolutionDir)\out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\out\build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);%GSTREAMER_1_0_ROOT_X86%\include\gdk-pixbuf-2.0;%GSTREAMER_1_0_ROOT_X86%\include\cairo</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>libgstoverlay</TargetName>
     <OutDir>$(SolutionDir)\out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\out\build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\gstreamer\1.0\x86_64\include\gdk-pixbuf-2.0;C:\gstreamer\1.0\x86_64\include\cairo</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>libgstoverlay</TargetName>
     <OutDir>$(SolutionDir)\out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\out\build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);%GSTREAMER_1_0_ROOT_X86%\include\gdk-pixbuf-2.0;%GSTREAMER_1_0_ROOT_X86%\include\cairo</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>libgstoverlay</TargetName>
     <OutDir>$(SolutionDir)\out\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\out\build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\gstreamer\1.0\x86_64\include\gdk-pixbuf-2.0;C:\gstreamer\1.0\x86_64\include\cairo</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,13 +150,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;OVERLAY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gstgl-1.0.lib;rsvg-2.lib;gio-2.0.lib;gdk_pixbuf-2.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86%\lib\gstreamer-1.0\*.*</Command>
+      <Command>copy /Y $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86%\lib\gstreamer-1.0\*.*</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,13 +169,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;OVERLAY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gstgl-1.0.lib;rsvg-2.lib;gio-2.0.lib;gdk_pixbuf-2.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86_64%\lib\gstreamer-1.0\*.*</Command>
+      <Command>copy /Y $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86_64%\lib\gstreamer-1.0\*.*</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -155,15 +190,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;OVERLAY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gstgl-1.0.lib;rsvg-2.lib;gio-2.0.lib;gdk_pixbuf-2.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86%\lib\gstreamer-1.0\*.*</Command>
+      <Command>copy /Y $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86%\lib\gstreamer-1.0\*.*</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -176,15 +213,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;OVERLAY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gstgl-1.0.lib;rsvg-2.lib;gio-2.0.lib;gdk_pixbuf-2.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86_64%\lib\gstreamer-1.0\*.*</Command>
+      <Command>copy /Y $(TargetDir)$(TargetFileName) %GSTREAMER_1_0_ROOT_X86_64%\lib\gstreamer-1.0\*.*</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

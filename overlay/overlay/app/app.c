@@ -1,24 +1,25 @@
 #include <gst/video/video-format.h>
+#include <memory.h>
 
+#include "../config.h"
+#include "../overlay/overlay-factory.hpp"
 #include "app.h"
-#include "../overlay/overlay-factory.h"
 
 
 #define overlay_filter_parent_class parent_class
 G_DEFINE_TYPE(OverlayFilter, gst_overlay, GST_TYPE_ELEMENT);
 
-// TODO format has to be something like this: GST_VIDEO_CAPS_MAKE("{  BGRA, RGBA }")
 static GstStaticPadTemplate sinkTemplate = GST_STATIC_PAD_TEMPLATE(
     "sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS("ANY")
+    GST_STATIC_CAPS(GST_VIDEO_CAPS_MAKE(INTERNAL_VIDEO_FORMAT))
 );
 
 static GstStaticPadTemplate srcTemplate = GST_STATIC_PAD_TEMPLATE("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS("ANY")
+    GST_STATIC_CAPS(GST_VIDEO_CAPS_MAKE(INTERNAL_VIDEO_FORMAT))
 );
 
 enum
@@ -32,14 +33,8 @@ static void gst_overlay_set_property(GObject* object, guint propId, const GValue
     OverlayFilter *filter = (OverlayFilter*) object;
     switch (propId) {
     case PROP_TYPE:
-    {
-        filter->overlayType = g_value_get_string(value);
-        FnOverlayCreate fnCreate = getCreateOverlayFn(filter->overlayType);
-        fnCreate();
-        filter->fnInit = getInitOverlayFn(filter->overlayType);
-        filter->fnDoProcess = getDoProcessFn(filter->overlayType);
-    }
-    break;
+        filter->overlay = CreateOverlay(g_value_get_string(value));
+        break;
     case PROP_FILE:
         filter->fileName = g_value_get_string(value);
         break;
@@ -52,13 +47,13 @@ static void gst_overlay_set_property(GObject* object, guint propId, const GValue
     }
 }
 
-static void gst_overlay_get_property(GObject* object, guint propId, const GValue* value, GParamSpec* pspec) {
+static void gst_overlay_get_property(GObject* object, guint propId, GValue* value, GParamSpec* pspec) {
 }
 
 static void gst_overlay_dispose(GObject * object) {
     OverlayFilter* filter = (OverlayFilter*) object;
-    FnOverlayDispose fnDispose = getOverlayDisposeFn(filter->overlayType);
-    fnDispose();
+    filter->overlay.reset();
+    filter->fileName.~basic_string();
 }
 
 static void gst_overlay_class_init(OverlayFilterClass* klass) {
@@ -68,9 +63,9 @@ static void gst_overlay_class_init(OverlayFilterClass* klass) {
     objectClass->get_property = gst_overlay_get_property;
 
     g_object_class_install_property(objectClass, PROP_TYPE, g_param_spec_string(
-        "type", "Type", "Overlay type", "test", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+        "type", "Type", "Overlay type", "test", GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
     g_object_class_install_property(objectClass, PROP_FILE, g_param_spec_string(
-        "file", "File", "File name to render", "", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+        "file", "File", "File name to render", "", GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
     g_object_class_install_property(objectClass, PROP_ALIGN, g_param_spec_int(
         "align", "Align (0-8)", "Align position", 0, 8, 0, G_PARAM_READWRITE));
 
@@ -93,9 +88,9 @@ static GstBuffer* gst_painter_process_data(OverlayFilter* filter, GstBuffer* buf
     GstBuffer* outbuf = gst_buffer_new();
     GstMemory* memory = gst_allocator_alloc(NULL, srcmapinfo.size, NULL);
     GstMapInfo dstmapinfo;
-    if (gst_memory_map(memory, &dstmapinfo, GST_MAP_WRITE)) {
+    if (gst_memory_map(memory, &dstmapinfo, GST_MAP_READWRITE)) {
         memcpy(dstmapinfo.data, srcmapinfo.data, srcmapinfo.size);
-        filter->fnDoProcess(&dstmapinfo, filter->width, filter->height);
+        filter->overlay->doProcess(&dstmapinfo);
         gst_buffer_insert_memory(outbuf, -1, memory);
         gst_memory_unmap(memory, &dstmapinfo);
     }
@@ -123,30 +118,17 @@ static gboolean overlay_filter_sink_event(GstPad* pad, GstObject* parent, GstEve
             GstCaps* caps;
             gst_event_parse_caps(event, &caps);
             GstStructure* structure = gst_caps_get_structure(caps, 0);
-            gst_structure_get_int(structure, "width", &filter->width);
-            gst_structure_get_int(structure, "height", &filter->height);
-            filter->format = gst_structure_get_string(structure, "format");
-            g_print("width=%d, height=%d, format=%s\n", filter->width, filter->height, filter->format);
-            filter->fnInit(filter->width, filter->height);
+            int width, height;
+            gst_structure_get_int(structure, "width", &width);
+            gst_structure_get_int(structure, "height", &height);
+            g_print("Initializing overlay. width=%d, height=%d\n", width, height);
+            filter->overlay->init(filter->fileName, width, height);
         }
         break;
     case GST_EVENT_EOS:
         break;
     }
     return gst_pad_event_default(pad, parent, event);
-}
-
-static gboolean gst_overlay_src_query(GstPad* pad, GstObject* parent, GstQuery* query) {
-    OverlayFilter *filter = GST_MY_FILTER(parent);
-    switch (GST_QUERY_TYPE(query)) {
-    case GST_QUERY_POSITION:
-        break;
-    case GST_QUERY_DURATION:
-        break;
-    case GST_QUERY_CAPS:
-        break;
-    }
-    return gst_pad_query_default(pad, parent, query);
 }
 
 static void gst_overlay_init(OverlayFilter* filter) {
@@ -157,7 +139,6 @@ static void gst_overlay_init(OverlayFilter* filter) {
     gst_element_add_pad(GST_ELEMENT(filter), filter->sinkpad);
 
     filter->srcpad = gst_pad_new_from_static_template(&srcTemplate, "src");
- // gst_pad_set_query_function(filter->srcpad, gst_overlay_src_query);
     GST_PAD_SET_PROXY_CAPS(filter->srcpad);
     gst_element_add_pad(GST_ELEMENT(filter), filter->srcpad);
 }

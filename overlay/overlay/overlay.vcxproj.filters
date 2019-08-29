@@ -13,13 +13,16 @@
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="config.h" />
-    <ClInclude Include="overlay\interface.h">
+    <ClInclude Include="overlay\interface.hpp">
       <Filter>overlay</Filter>
     </ClInclude>
-    <ClInclude Include="overlay\overlay-factory.h">
+    <ClInclude Include="overlay\overlay-factory.hpp">
       <Filter>overlay</Filter>
     </ClInclude>
-    <ClInclude Include="overlay\test-overlay.h">
+    <ClInclude Include="overlay\software-overlay.hpp">
+      <Filter>overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\test-overlay.hpp">
       <Filter>overlay</Filter>
     </ClInclude>
   </ItemGroup>
@@ -30,10 +33,13 @@
     <ClCompile Include="app\main.c">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="overlay\overlay-factory.c">
+    <ClCompile Include="overlay\overlay-factory.cpp">
       <Filter>overlay</Filter>
     </ClCompile>
-    <ClCompile Include="overlay\test-overlay.c">
+    <ClCompile Include="overlay\software-overlay.cpp">
+      <Filter>overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\test-overlay.cpp">
       <Filter>overlay</Filter>
     </ClCompile>
   </ItemGroup>
