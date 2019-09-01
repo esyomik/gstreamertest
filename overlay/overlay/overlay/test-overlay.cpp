@@ -8,7 +8,7 @@ TestOverlay::TestOverlay()
     : width_(0) {;}
 
 
-int TestOverlay::init(const std::string& path, int width, int height) {
+int TestOverlay::init(const std::string& path, int width, int height, utils::AlignPosition align) {
     width_ = width;
     return 0;
 }

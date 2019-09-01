@@ -122,7 +122,7 @@ static gboolean overlay_filter_sink_event(GstPad* pad, GstObject* parent, GstEve
             gst_structure_get_int(structure, "width", &width);
             gst_structure_get_int(structure, "height", &height);
             g_print("Initializing overlay. width=%d, height=%d\n", width, height);
-            filter->overlay->init(filter->fileName, width, height);
+            filter->overlay->init(filter->fileName, width, height, (utils::AlignPosition) filter->align);
         }
         break;
     case GST_EVENT_EOS:

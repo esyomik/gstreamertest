@@ -10,7 +10,7 @@ public:
     TestOverlay();
     virtual ~TestOverlay() { ; }
 
-    virtual int init(const std::string& path, int width, int height) override;
+    virtual int init(const std::string& path, int width, int height, utils::AlignPosition align) override;
     virtual int doProcess(const GstMapInfo* mapInfo) override;
 
 private:

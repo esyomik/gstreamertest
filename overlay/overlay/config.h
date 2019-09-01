@@ -6,7 +6,7 @@
 #define PACKAGE_NAME "TEST source release"
 #define PACKAGE_ORIGIN "http://google.com"
 
-#define INTERNAL_VIDEO_FORMAT "BGRA"
+#define INTERNAL_VIDEO_FORMAT "RGBA"
 #define BYTE_PER_PIXEL 4
 
 #endif // CONFIG_23_31_23_25_8_19_h

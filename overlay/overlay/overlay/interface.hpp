@@ -5,29 +5,25 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 
+#include "../util/rectangle.hpp"
+
+
 /**
  * Overlay interface.
  */
 class OverlayInterface
 {
 public:
-    enum RetCode
-    {
-        Success = 0,
-        FileNotFound,
-        Error
-    };
-
-public:
 
     /**
      * Initializes an overlay surface.
+     * @param path the name of file with resource; some implementation may use it as path to script
      * @param width the width of the overlay in pixels
      * @param height the height of the overlay in pixels
-     * @param path the name of file with resource; some implementation may use it as path to script
+     * @param align align position of the overlay
      * @return a boolean result
      */
-    virtual int init(const std::string& path, int width, int height) = 0;
+    virtual int init(const std::string& path, int width, int height, utils::AlignPosition align) = 0;
 
     /**
      * Modifies video frames.

@@ -1,54 +1,50 @@
+#include <librsvg-2.0/librsvg/rsvg.h>
+#include <algorithm>
+
 #include "../config.h"
+#include "../util/bitmap-utils.hpp"
 #include "software-overlay.hpp"
 
 
 SoftwareOverlay::SoftwareOverlay()
     : width_(0)
     , height_(0)
-    , svgHandle(nullptr)
-    , svgBitmap(nullptr) {}
+    , svgBitmap(nullptr)
+    , align_(utils::AlignPosition::TopLeft) {}
 
 
 SoftwareOverlay::~SoftwareOverlay() {
-    rsvg_handle_close(svgHandle, NULL);
+    g_object_unref(svgBitmap);
     rsvg_cleanup();
 }
 
 
-int SoftwareOverlay::init(const std::string& path, int width, int height) {
+int SoftwareOverlay::init(const std::string& path, int width, int height, utils::AlignPosition align) {
     width_ = width;
     height_ = height;
+    align_ = align;
 
-    GFile* file = g_file_new_for_path(path.c_str());
-    GError* error = NULL;
-    svgHandle = rsvg_handle_new_from_gfile_sync(file, RSVG_HANDLE_FLAG_KEEP_IMAGE_DATA, NULL, &error);
-    if (svgHandle == NULL) {
-        g_print("Can't load '%s' file; error %s\n", path, error->message);
-        return RetCode::FileNotFound;
+    auto result = createBitmapFromSvg(path.c_str(), 90.0); // TODO how to determine DPI?
+    if (result.success()) {
+        if (gdk_pixbuf_get_n_channels(result.getData()) != BYTE_PER_PIXEL) {
+            g_print("Can't use this file. Color depth must be equal 4");
+            g_object_unref(result.getData());
+            return RetCode::BadFormat;
+        }
+        svgBitmap = result.getData();
     }
 
-    g_print("SVG file '%s' was successfully loaded\n", path);
-    rsvg_handle_set_dpi(svgHandle, 90.0); // TODO how to determine DPI?
-    svgBitmap = rsvg_handle_get_pixbuf(svgHandle); // TODO it is better render to Cairo context instead
-    return svgBitmap ? RetCode::Success : RetCode::Error;
+    return result.getCode();
 }
 
 
 int SoftwareOverlay::doProcess(const GstMapInfo* mapInfo) {
-    if (svgBitmap == NULL) {
-        return 2;
+    if (svgBitmap == nullptr) {
+        return RetCode::FileNotFound;
     }
 
-    /*
-    guint8* dest = mapInfo->data;
-    guchar* pixels = gdk_pixbuf_get_pixels(svgBitmap);
-    int bmpHeight = gdk_pixbuf_get_height(svgBitmap);
-    int bmpWidth = gdk_pixbuf_get_width(svgBitmap);
-    for (int i = 0; i < bmpHeight; ++i) {
-        memcpy(dest, pixels, bmpWidth * 4);
-        dest += width * BYTE_PER_PIXEL;
-        pixels += bmpWidth * 4;
-    }
-    */
-    return 0;
+    bitBltBlend(mapInfo->data, width_, height_, gdk_pixbuf_get_pixels(svgBitmap),
+        gdk_pixbuf_get_width(svgBitmap), gdk_pixbuf_get_height(svgBitmap), align_);
+    
+    return RetCode::Success;
 }
