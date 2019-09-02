@@ -5,7 +5,7 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 
-#include "../util/rectangle.hpp"
+#include "../../common/rectangle.hpp"
 
 
 /**

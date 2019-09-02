@@ -2,8 +2,10 @@
 #define OGL_OVERLAY_17_06_54_1_9_19_h
 
 #include <gst/gl/gl.h>
+#include <gst/gl/gstglcontext.h>
 
 #include "interface.hpp"
+#include "../gl/shader.hpp"
 
 
 class OglOverlay : public OverlayInterface
@@ -16,9 +18,17 @@ public:
     virtual int doProcess(const GstMapInfo* mapInfo) override;
 
 private:
+    int load(const std::string& path);
+    static void filterStop(GstGLContext * context, gpointer data);
+
+private:
+    std::string path_;
     GstGLDisplay* display_;
     GstGLContext* context_;
     unsigned int texture_;
+
+    bool started_;
+    Shader shader_;
 
 };
 

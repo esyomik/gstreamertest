@@ -30,6 +30,8 @@ public:
     Rectangle() { ; }
     Rectangle(T l, T t, T r, T b) : left_(l), top_(t), right_(r), bottom_(b) { ; }
 
+    template<typename N> Rectangle<N> to() const { return Rectangle<N>((N) left_, (N) top_, (N) right_, (N) bottom_); }
+
     T left() const { return left_; }
     T top() const { return top_; }
     T right() const { return right_; }
@@ -37,6 +39,8 @@ public:
 
     Rectangle<T>& alignTo(const Rectangle<T> &r, AlignPosition align);
     Rectangle<T> getAligned(T width, T height, AlignPosition align) const;
+    Rectangle<T>& scale(T horizontal, T vertical);
+    Rectangle<T>& offset(T dx, T dy);
 
 private:
     T left_;
@@ -116,6 +120,26 @@ Rectangle<T> Rectangle<T>::getAligned(T width, T height, AlignPosition align)con
     Rectangle<T> r(0, 0, width, height);
     r.alignTo(*this, align);
     return r;
+}
+
+
+template<typename T>
+inline Rectangle<T>& Rectangle<T>::scale(T horizontal, T vertical) {
+    left_ *= horizontal;
+    top_ *= vertical;
+    right_ *= horizontal;
+    bottom_ *= vertical;
+    return *this;
+}
+
+
+template<typename T>
+utils::Rectangle<T>& utils::Rectangle<T>::offset(T dx, T dy) {
+    left_ += dx;
+    right_ += dx;
+    top_ += dy;
+    bottom_ += dy;
+    return *this;
 }
 
 }

@@ -1,5 +1,5 @@
 #include "app.h"
-#include "../config.h"
+#include "../../config.h"
 
 
 static gboolean plugin_init(GstPlugin* plugin) {

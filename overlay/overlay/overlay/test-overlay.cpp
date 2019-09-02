@@ -1,6 +1,6 @@
 #include <memory.h>
 
-#include "../config.h"
+#include "../../config.h"
 #include "test-overlay.hpp"
 
 

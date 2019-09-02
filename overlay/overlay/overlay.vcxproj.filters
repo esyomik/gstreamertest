@@ -10,12 +10,14 @@
     <Filter Include="utils">
       <UniqueIdentifier>{9762398d-a477-48b8-af8d-428f151ab606}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gl">
+      <UniqueIdentifier>{3268fd31-c68c-4b53-b7f4-5471e931c43d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\app.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="config.h" />
     <ClInclude Include="overlay\interface.hpp">
       <Filter>overlay</Filter>
     </ClInclude>
@@ -28,19 +30,22 @@
     <ClInclude Include="overlay\test-overlay.hpp">
       <Filter>overlay</Filter>
     </ClInclude>
-    <ClInclude Include="util\color.hpp">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="util\rectangle.hpp">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="util\bitmap-utils.hpp">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="overlay\ogl-overlay.hpp">
       <Filter>overlay</Filter>
     </ClInclude>
-    <ClInclude Include="util\result.hpp">
+    <ClInclude Include="gl\shader.hpp">
+      <Filter>gl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\bitmap-utils.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\color.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\rectangle.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\result.hpp">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -60,14 +65,17 @@
     <ClCompile Include="overlay\test-overlay.cpp">
       <Filter>overlay</Filter>
     </ClCompile>
-    <ClCompile Include="util\color.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="util\bitmap-utils.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="overlay\ogl-overlay.cpp">
       <Filter>overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="gl\shader.cpp">
+      <Filter>gl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\bitmap-utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\color.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

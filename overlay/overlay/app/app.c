@@ -1,7 +1,7 @@
 #include <gst/video/video-format.h>
 #include <memory.h>
 
-#include "../config.h"
+#include "../../config.h"
 #include "../overlay/overlay-factory.hpp"
 #include "app.h"
 
@@ -65,7 +65,7 @@ static void gst_overlay_class_init(OverlayFilterClass* klass) {
     g_object_class_install_property(objectClass, PROP_TYPE, g_param_spec_string(
         "type", "Type", "Overlay type", "test", GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
     g_object_class_install_property(objectClass, PROP_FILE, g_param_spec_string(
-        "file", "File", "File name to render", "", GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+        "location", "File location", "File path to render", "", GParamFlags(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
     g_object_class_install_property(objectClass, PROP_ALIGN, g_param_spec_int(
         "align", "Align (0-8)", "Align position", 0, 8, 0, G_PARAM_READWRITE));
 

@@ -20,6 +20,7 @@ public:
     Result(RetType data, RetCode retCode) : ret_(data), code_(retCode) { ; }
     Result(RetType data, RetCode retCode, const char* text)
         : ret_(data), code_(retCode), description_(text) { ; }
+    Result(RetCode retCode, const char* text) : code_(retCode), description_(text) { ; }
 
     RetType getData() const { return ret_; }
     RetCode getCode() const { return code_; }

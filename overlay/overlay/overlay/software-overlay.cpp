@@ -1,8 +1,8 @@
 #include <librsvg-2.0/librsvg/rsvg.h>
 #include <algorithm>
 
-#include "../config.h"
-#include "../util/bitmap-utils.hpp"
+#include "../../config.h"
+#include "../../common/bitmap-utils.hpp"
 #include "software-overlay.hpp"
 
 
